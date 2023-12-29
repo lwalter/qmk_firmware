@@ -23,9 +23,9 @@ enum tap_dance_codes {
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case LT(1,KC_ESCAPE):
-            return TAPPING_TERM -75;
+            return 85;
         case TD(DANCE_0):
-            return TAPPING_TERM -75;
+            return 85;
         default:
             return TAPPING_TERM;
     }
