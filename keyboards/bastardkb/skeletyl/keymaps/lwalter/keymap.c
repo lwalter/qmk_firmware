@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2021 Quentin LEBASTARD <qlebastard@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,6 +16,26 @@
  */
 
 #include QMK_KEYBOARD_H
+enum custom_keycodes {
+    LT_EQ = SAFE_RANGE,
+    GT_EQ,
+};
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+    case LT_EQ:
+        if (record->event.pressed) {
+            SEND_STRING("<=");
+        }
+        break;
+    case GT_EQ:
+        if (record->event.pressed) {
+            SEND_STRING(">=");
+        }
+        break;
+    }
+    return true;
+};
 
 enum tap_dance_codes {
   DANCE_0,
@@ -38,7 +58,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      MT(MOD_LGUI, KC_Z), MT(MOD_LALT, KC_X), MT(MOD_LCTL, KC_C), MT(MOD_LSFT, KC_V), KC_B,                         KC_N,    MT(MOD_LSFT, KC_M), MT(MOD_LCTL, KC_COMM),  MT(MOD_LALT, KC_DOT), MT(MOD_LGUI, KC_SLSH), 
+      MT(MOD_LGUI, KC_Z), MT(MOD_LALT, KC_X), MT(MOD_LCTL, KC_C), MT(MOD_LSFT, KC_V), KC_B,                         KC_N,    MT(MOD_LSFT, KC_M), MT(MOD_LCTL, KC_COMM),  MT(MOD_LALT, KC_DOT), MT(MOD_LGUI, KC_SLSH),
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           LT(1, KC_ESCAPE), KC_SPC,  KC_TAB,     LT(3, KC_ENT), KC_BSPC, TD(DANCE_0)
                                       //`--------------------------'  `--------------------------'
@@ -63,7 +83,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_CIRC, KC_AMPR, KC_ASTR, KC_DQUO, KC_TRANSPARENT,                      KC_MINS,  KC_UNDS, KC_LPRN, KC_RPRN, KC_QUOTE,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_GRAVE, KC_TILD, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,        KC_TRANSPARENT, KC_TRANSPARENT, LSFT(KC_LBRC), LSFT(KC_RBRC), KC_BSLS,
+      KC_GRAVE, KC_TILD, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,        LT_EQ, GT_EQ, LSFT(KC_LBRC), LSFT(KC_RBRC), KC_BSLS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT,     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
                                       //`--------------------------'  `--------------------------'
