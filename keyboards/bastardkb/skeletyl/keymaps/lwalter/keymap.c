@@ -19,6 +19,7 @@
 enum custom_keycodes {
     LT_EQ = SAFE_RANGE,
     GT_EQ,
+    WALRUS,
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -31,6 +32,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case GT_EQ:
         if (record->event.pressed) {
             SEND_STRING(">=");
+        }
+        break;
+    case WALRUS:
+        if (record->event.pressed) {
+            SEND_STRING(":=");
         }
         break;
     }
@@ -81,7 +87,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC,                      KC_PLUS, KC_EQL, KC_LBRC, KC_RBRC, KC_PIPE,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_CIRC, KC_AMPR, KC_ASTR, KC_DQUO, KC_TRANSPARENT,                      KC_MINS,  KC_UNDS, KC_LPRN, KC_RPRN, KC_QUOTE,
+      KC_CIRC, KC_AMPR, KC_ASTR, KC_DQUO, WALRUS,                      KC_MINS,  KC_UNDS, KC_LPRN, KC_RPRN, KC_QUOTE,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_GRAVE, KC_TILD, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,        LT_EQ, GT_EQ, LSFT(KC_LBRC), LSFT(KC_RBRC), KC_BSLS,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
