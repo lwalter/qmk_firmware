@@ -16,29 +16,37 @@
  */
 
 #include QMK_KEYBOARD_H
+#include "features/achordion.h"
+
 enum custom_keycodes {
     LT_EQ = SAFE_RANGE,
     GT_EQ,
     WALRUS,
 };
 
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+void matrix_scan_user(void) {
+    achordion_task();
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t* record) {
+    if (!process_achordion(keycode, record)) { return false; }
+
     switch (keycode) {
-    case LT_EQ:
-        if (record->event.pressed) {
-            SEND_STRING("<=");
-        }
-        break;
-    case GT_EQ:
-        if (record->event.pressed) {
-            SEND_STRING(">=");
-        }
-        break;
-    case WALRUS:
-        if (record->event.pressed) {
-            SEND_STRING(":=");
-        }
-        break;
+        case LT_EQ:
+            if (record->event.pressed) {
+                SEND_STRING("<=");
+            }
+            break;
+        case GT_EQ:
+            if (record->event.pressed) {
+                SEND_STRING(">=");
+            }
+            break;
+        case WALRUS:
+            if (record->event.pressed) {
+                SEND_STRING(":=");
+            }
+            break;
     }
     return true;
 };
@@ -46,9 +54,44 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 enum tap_dance_codes {
   DANCE_0,
 };
+
+uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
+    switch (tap_hold_keycode) {
+        case LT(1, KC_ESCAPE):
+        case TD(DANCE_0):
+        case LT(3, KC_ENT):
+            return 0;
+        }
+
+    return 800;
+}
+
+bool achordion_chord(uint16_t tap_hold_keycode,
+                     keyrecord_t* tap_hold_record,
+                     uint16_t other_keycode,
+                     keyrecord_t* other_record) {
+    switch (tap_hold_keycode) {
+        case LT(1, KC_ESCAPE):
+        case TD(DANCE_0):
+        case LT(3, KC_ENT):
+            return true;
+        case MT(MOD_LGUI, KC_SLSH):
+            if (other_keycode == TD(DANCE_0)) {
+                return true;
+            }
+            break;
+        case MT(MOD_LALT, KC_DOT):
+            if (other_keycode == KC_BSPC) {
+                return true;
+            }
+            break;
+    }
+    return achordion_opposite_hands(tap_hold_record, other_record);
+}
+
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case LT(1,KC_ESCAPE):
+        case LT(1, KC_ESCAPE):
             return 85;
         case TD(DANCE_0):
             return 85;
@@ -56,6 +99,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
             return TAPPING_TERM;
     }
 }
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [0] = LAYOUT_split_3x5_3(
