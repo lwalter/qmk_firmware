@@ -55,6 +55,16 @@ enum tap_dance_codes {
   DANCE_0,
 };
 
+bool achordion_eager_mod(uint8_t mod) {
+  switch (mod) {
+    case MOD_LGUI:
+      return true;
+
+    default:
+      return false;
+  }
+}
+
 uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
     switch (tap_hold_keycode) {
         case LT(1, KC_ESCAPE):
